@@ -1,0 +1,4 @@
+fastapi[all]==0.113.0
+pydantic==2.8.0
+pyjwt==2.10.1
+passlib[bcrypt]==1.7.4
