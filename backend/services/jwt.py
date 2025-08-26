@@ -15,16 +15,16 @@ def create_token(payload: dict) -> str:
 def user_to_token(user: User) -> str:
     "Turn a user into a token"
     return create_token({
-        "sub": user.username,
+        "sub": str(user.id),
         "iat": datetime.now(timezone.utc)
     })
 
-def get_username_from_token(token: str) -> str:
-    "Decode the JWT token and extract the username from it"
+def get_user_id_from_token(token: str) -> int:
+    "Decode the JWT token and extract the user ID from it"
     try:
         payload = jwt.decode(token, settings.secret_key, settings.hash_algorithm)
-        username = payload.get("sub")
-        if username == None:
+        id = str(payload.get("sub"))
+        if id == None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not get the username from the payload"
@@ -34,4 +34,4 @@ def get_username_from_token(token: str) -> str:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Bad token"
         )
-    return username
+    return int(id)

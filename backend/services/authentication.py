@@ -5,8 +5,8 @@ from pydantic import BaseModel
 
 from config.database import SessionDependency
 from model.user import User
-from services.jwt import get_username_from_token, user_to_token
-from services.user_repository import get_user_by_username, save_user
+from services.jwt import get_user_id_from_token, user_to_token
+from services.user_repository import get_user_by_id, get_user_by_username, save_user
 from .encryption import hashed_equals, hashify
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users/login")
@@ -35,8 +35,8 @@ def register_user(username: str, password: str, session: SessionDependency) -> U
 
 async def get_logged_in_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDependency) -> User:
     "Get the user from the JWT token"
-    username = get_username_from_token(token)
-    user = get_user_by_username(username, session)
+    id = get_user_id_from_token(token)
+    user = get_user_by_id(id, session)
     if user == None:
         raise incorrect_credentials
     return user

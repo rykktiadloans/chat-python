@@ -35,7 +35,7 @@ async def register(credentials: Annotated[RegisterCredentials, Body()], session:
     "An endpoint for creating a new user"
     register_user(credentials.username, credentials.password, session)
 
-# Delete l8r
+# I think I'll just. Let it stay here actually
 @router.get("/secret")
 async def secret(user: Annotated[User, Depends(get_logged_in_user)]):
     "A test endpoint to check whether the authentication works"
