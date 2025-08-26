@@ -5,6 +5,9 @@ class Settings(BaseSettings):
     secret_key: str
     hash_algorithm: str
     expiration_minutes: int
+    db_name: str
+    db_user: str
+    db_password: str
 
     model_config = SettingsConfigDict(env_file=".env")
 

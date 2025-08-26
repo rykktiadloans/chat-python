@@ -5,8 +5,8 @@ A messaging app made in Python using FastAPI and React
 ## To-do
 ### Backend
 - [x] Add OAuth2
-- [ ] Add a PostgreSQL container and connect to it
-- [ ] Add the ability to register a user
+- [x] Add a PostgreSQL container and connect to it
+- [x] Add the ability to register a user
 - [ ] Add messaging model and chats
 - [ ] Add API for messaging (sending new messages, deleting and editing existing ones)
 

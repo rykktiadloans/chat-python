@@ -13,12 +13,14 @@ def create_token(payload: dict) -> str:
     return jwt.encode(data, settings.secret_key, settings.hash_algorithm)
 
 def user_to_token(user: User) -> str:
+    "Turn a user into a token"
     return create_token({
         "sub": user.username,
         "iat": datetime.now(timezone.utc)
     })
 
 def get_username_from_token(token: str) -> str:
+    "Decode the JWT token and extract the username from it"
     try:
         payload = jwt.decode(token, settings.secret_key, settings.hash_algorithm)
         username = payload.get("sub")

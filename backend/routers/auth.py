@@ -1,15 +1,21 @@
 from typing import Annotated
-from fastapi import Depends
+from fastapi import Body, Depends, status
 from fastapi.routing import APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+from config.database import SessionDependency
 from model.user import User
-from services.authentication import get_logged_in_user, login_user
+from services.authentication import get_logged_in_user, login_user, register_user
+from services.user_repository import save_user
 
 class Token(BaseModel):
     token: str
     token_type: str
+
+class RegisterCredentials(BaseModel):
+    username: str = Field(max_length=20)
+    password: str = Field(max_length=100)
 
 prefix = "/api/v1/users"
 
@@ -19,10 +25,15 @@ router = APIRouter(
 )
 
 @router.post("/login")
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    "AP endpoint for logging in"
-    token = login_user(form_data.username, form_data.password)
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDependency):
+    "An endpoint for logging in"
+    token = login_user(form_data.username, form_data.password, session)
     return Token(token=token, token_type="bearer")
+
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+async def register(credentials: Annotated[RegisterCredentials, Body()], session: SessionDependency):
+    "An endpoint for creating a new user"
+    register_user(credentials.username, credentials.password, session)
 
 # Delete l8r
 @router.get("/secret")

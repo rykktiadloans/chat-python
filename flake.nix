@@ -16,6 +16,7 @@
         {
           buildInputs = [
             pkgs.python312
+            pkgs.postgresql
           ];
 
           shellHook = ''
