@@ -1,10 +1,11 @@
 from datetime import datetime, timezone
 from typing import Annotated
-from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query, status
+from fastapi import APIRouter, Body, Depends, File, Form, HTTPException, Path, Query, UploadFile, status
 from pydantic import BaseModel, Field
 
 from config.database import SessionDependency
-from model.message import CONTENT_LENGTH, MessageRequest, MessageResponse
+from model.attachment import AttachmentResponse
+from model.message import CONTENT_LENGTH, MessageRequest
 from model.page import PageDependency
 from model.user import User
 from services.authentication import get_logged_in_user
@@ -15,6 +16,16 @@ class PatchPost(BaseModel):
     id: int
     content: str = Field(max_length=CONTENT_LENGTH)
 
+
+class MessageResponse(BaseModel):
+    "A class that defines the body of a response containing a message"
+    id: int
+    content: str = Field(max_length=CONTENT_LENGTH)
+    sent_at: datetime
+    sender_username: str
+    recipient_username: str
+    attachments: list[AttachmentResponse]
+
 prefix = "/api/v1/messages"
 
 router = APIRouter(
@@ -23,17 +34,26 @@ router = APIRouter(
 
 @router.post("/")
 async def post_message(
-        message_request: Annotated[MessageRequest, Body()], 
+        content: Annotated[str, Form(max_length=CONTENT_LENGTH)],
+        recipient_username: Annotated[str, Form()],
+        attachments: Annotated[list[UploadFile] | None, File()],
         user: Annotated[User, Depends(get_logged_in_user)], 
         session: SessionDependency):
     "An endpoint for making new messages"
-    message = save_message_request(user, message_request, session)
+    message_request = MessageRequest(content=content, recipient_username=recipient_username)
+    if attachments == None:
+        attachments = []
+    message = save_message_request(user, message_request, attachments, session)
     return MessageResponse(
         id=(0 if message.id == None else message.id),
         content=message.content,
         sent_at=message.sent_at,
         sender_username=user.username,
-        recipient_username=message_request.recipient_username
+        recipient_username=message_request.recipient_username,
+        attachments=list(map(lambda a: AttachmentResponse(
+            original_name=a.original_name,
+            stored_name=a.stored_name
+        ), message.attachments))
     )
 
 @router.patch("/")
@@ -60,7 +80,11 @@ async def patch_message(
         content=message.content,
         sent_at=message.sent_at,
         sender_username=user.username,
-        recipient_username=message.recipient.username
+        recipient_username=message.recipient.username,
+        attachments=list(map(lambda a: AttachmentResponse(
+            original_name=a.original_name,
+            stored_name=a.stored_name
+        ), message.attachments))
     )
 
 @router.delete("/{id}")
@@ -98,5 +122,9 @@ async def get_message(
         content=m.content,
         sent_at=m.sent_at,
         sender_username=m.sender.username,
-        recipient_username=m.recipient.username
+        recipient_username=m.recipient.username,
+        attachments=list(map(lambda a: AttachmentResponse(
+            original_name=a.original_name,
+            stored_name=a.stored_name
+        ), m.attachments))
     ), messages))

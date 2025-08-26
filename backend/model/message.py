@@ -25,17 +25,11 @@ class Message(SQLModel, table=True):
         sa_relationship_kwargs={"foreign_keys": "Message.recipient_id"}
     )
 
+    attachments: list["Attachment"] = Relationship(back_populates="message", cascade_delete=True)
+
     __tablename__ = "messages"
 
 class MessageRequest(BaseModel):
     "A class that defines the body of a request to make new message"
     content: str = Field(max_length=CONTENT_LENGTH)
-    recipient_username: str
-
-class MessageResponse(BaseModel):
-    "A class that defines the body of a response containing a message"
-    id: int
-    content: str = Field(max_length=CONTENT_LENGTH)
-    sent_at: datetime
-    sender_username: str
     recipient_username: str
