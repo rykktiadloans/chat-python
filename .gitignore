@@ -1,4 +1,2 @@
 .envrc
-flake.lock
-flake.nix
 .direnv/
