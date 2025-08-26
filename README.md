@@ -9,15 +9,13 @@ A messaging app made in Python using FastAPI and React
 - [x] Add the ability to register a user
 - [x] Add messaging model and chats
 - [x] Add the ability to send new sending new messages
-- [ ] Add the ability to edit and delete messages
+- [x] Add the ability to edit and delete messages
+- [x] Add attachments
 
 ### Frontend
 - [ ] Make a login and register page
 - [ ] Add a page for browsing chats with users
 - [ ] Add chat views
-
-### Final stuff
-- [ ] Add attachments
 
 
 ## Running instructions so that I don't forget
