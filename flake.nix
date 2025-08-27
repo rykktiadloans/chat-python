@@ -17,6 +17,7 @@
           buildInputs = [
             pkgs.python312
             pkgs.postgresql
+            pkgs.nodejs_22
           ];
 
           shellHook = ''
