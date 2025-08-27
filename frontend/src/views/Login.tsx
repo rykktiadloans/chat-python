@@ -3,7 +3,7 @@ import FormField from "../components/FormField";
 function Login() {
   return (
     <main className="w-full h-screen py-9 bg-gray-200 flex flex-col items-center gap-10">
-      <div className="w-full sm:w-80 flex flex-col bg-white p-3 gap-6 border border-gray-400 rounded-xl">
+      <div className="w-full sm:w-96 flex flex-col bg-white p-3 gap-6 border border-gray-400 rounded-xl">
         <h1 className="font-bold text-4xl text-center text-emerald-600">Login</h1>
         <form action="/api/v1/users/login" method="POST" className="flex flex-col gap-3">
           <FormField label="Username" name="username" />
