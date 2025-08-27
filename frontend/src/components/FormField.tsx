@@ -11,7 +11,7 @@ function FormField({ label, name }: Props) {
         type="text"
         name={name}
         id={name}
-        className="w-full transition-colors border-1 border-gray-800
+        className="w-full transition-colors border border-gray-800
               hover:border-emerald-400 rounded-md p-1"
       />
     </div>
