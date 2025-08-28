@@ -34,15 +34,15 @@ router = APIRouter(
 
 @router.post("/")
 async def post_message(
-        content: Annotated[str, Form(max_length=CONTENT_LENGTH)],
         recipient_username: Annotated[str, Form()],
-        attachments: Annotated[list[UploadFile] | None, File()],
         user: Annotated[User, Depends(get_logged_in_user)], 
-        session: SessionDependency):
+        session: SessionDependency,
+        attachments: list[UploadFile] | None = None,
+        content: Annotated[str, Form(max_length=CONTENT_LENGTH)] = ""):
     "An endpoint for making new messages"
-    message_request = MessageRequest(content=content, recipient_username=recipient_username)
     if attachments == None:
         attachments = []
+    message_request = MessageRequest(content=content, recipient_username=recipient_username)
     message = save_message_request(user, message_request, attachments, session)
     return MessageResponse(
         id=(0 if message.id == None else message.id),

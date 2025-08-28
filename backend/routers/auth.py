@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from config.database import SessionDependency
 from model.user import User
 from services.authentication import get_logged_in_user, login_user, register_user
-from services.user_repository import save_user
+from services.user_repository import get_contacts, save_user
 
 class Token(BaseModel):
     token: str
@@ -34,6 +34,11 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], sess
 async def register(credentials: Annotated[RegisterCredentials, Body()], session: SessionDependency):
     "An endpoint for creating a new user"
     register_user(credentials.username, credentials.password, session)
+
+@router.get("/contacts")
+async def contacts(user: Annotated[User, Depends(get_logged_in_user)], session: SessionDependency):
+    "An endpoint to get contacts"
+    return get_contacts(user, session)
 
 # I think I'll just. Let it stay here actually
 @router.get("/secret")

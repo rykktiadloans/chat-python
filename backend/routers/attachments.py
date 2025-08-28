@@ -14,7 +14,7 @@ router = APIRouter(
     prefix = prefix
 )
 
-@router.get("/{stored_name}", response_class=FileResponse)
+@router.get("/{stored_name}")
 async def get_attachment(stored_name: Annotated[str, Path], session: SessionDependency):
     "An endpoint for getting attachments' files"
     attachment = get_attachment_by_stored_name(stored_name, session)
@@ -23,4 +23,4 @@ async def get_attachment(stored_name: Annotated[str, Path], session: SessionDepe
             status_code=HTTP_404_NOT_FOUND,
             detail="Attachment could not be found"
         )
-    return str(pathlib.Path(ATTACHMENTS_DIR).joinpath(attachment.stored_name))
+    return FileResponse(path=str(pathlib.Path(ATTACHMENTS_DIR).joinpath(attachment.stored_name)))
