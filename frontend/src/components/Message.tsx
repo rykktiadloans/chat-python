@@ -10,10 +10,11 @@ interface Props {
       storedName: string;
     },
   ];
+  onDoubleClick: () => void;
 }
 
 
-function Message({ isSelf, content, sentAt, attachments }: Props) {
+function Message({ isSelf, content, sentAt, attachments, onDoubleClick }: Props) {
   const date = `${sentAt.getHours()}:${sentAt.getMinutes()} ${sentAt.getDate()}/${sentAt.getMonth() + 1}`;
   const selfStyle = isSelf
     ? "bg-emerald-400 border-transparent text-white self-end"
@@ -21,6 +22,7 @@ function Message({ isSelf, content, sentAt, attachments }: Props) {
   return (
     <div
       className={"w-full sm:w-80 flex flex-col align-baseline p-2 border rounded-md " + selfStyle}
+      onDoubleClick={onDoubleClick}
     >
       <div>{content}</div>
       {attachments.map((el) => (

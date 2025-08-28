@@ -29,11 +29,11 @@ def get_user_by_id(id: int, session: SessionDependency) -> User | None:
 def get_contacts(user: User, session: SessionDependency) -> list[Contact]:
     "Get a list of contacts"
     sql = """
-SELECT DISTINCT ON (other)
-    id, 
+SELECT DISTINCT ON (other, sent_at)
+    first_value(id) OVER wnd id, 
     other, 
-    content, 
-    sent_at
+    first_value(content) OVER wnd content, 
+    first_value(sent_at) OVER wnd sent_at
 FROM (
     SELECT 
         messages.id, 
@@ -46,11 +46,13 @@ FROM (
         messages.content, 
         messages.sent_at
     FROM messages
-    LEFT OUTER JOIN users AS sender ON sender.id = messages.sender_id
-    LEFT OUTER JOIN users AS recipient ON recipient.id = messages.recipient_id
-    WHERE sender.username = :username OR recipient.username = :username 
-    ORDER BY messages.sent_at DESC, sender.username, recipient.username)
-    ;
+    LEFT JOIN users AS sender ON sender.id = messages.sender_id
+    LEFT JOIN users AS recipient ON recipient.id = messages.recipient_id
+    WHERE sender.username = :username OR recipient.username = :username)
+WINDOW wnd AS (
+    PARTITION BY other ORDER BY sent_at DESC
+    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+ORDER BY sent_at DESC;
 """
     result = session.connection().execute(text(sql), {"username": user.username})
     contacts: list[Contact] = []
