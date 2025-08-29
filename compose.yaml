@@ -1,4 +1,23 @@
 services:
+  chat:
+    container_name: chat
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/upload:/app/backend/upload
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - HASH_ALGORITHM=${HASH_ALGORITHM}
+      - EXPIRATION_MINUTES=${EXPIRATION_MINUTES}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_URL=db
+    depends_on:
+      - db
   db:
     container_name: postgres
     image: postgres:17

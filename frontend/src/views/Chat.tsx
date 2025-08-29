@@ -369,6 +369,9 @@ function Chat() {
               setOther={setOther}
             />
           ))}
+          {
+            displayContacts.length === 0 ? <p className="flex flex-col items-center">No contacts</p> : <></>
+          }
         </div>
         <div className="flex flex-col-reverse p-3 gap-2 overflow-scroll" ref={infiniteRef}>
           {messages.map((m, index) => (
@@ -379,6 +382,9 @@ function Chat() {
               sentAt={m.sentAt}
               attachments={m.attachments}
               onDoubleClick={() => {
+                if(m.senderUsername !== username) {
+                  return;
+                }
                 setSelectedMessageId(m.id);
                 setSelectedMessageContent(m.content);
                 setShowOverlay(true);
