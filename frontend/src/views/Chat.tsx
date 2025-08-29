@@ -3,7 +3,7 @@ import Contact from "../components/Contact";
 import Message from "../components/Message";
 import { logout, selectToken, selectUsername } from "../stores/user/userSlice";
 import { useNavigate } from "react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState} from "react";
 import { contactFromJson, type Contact as IContact } from "../model/contact.ts";
 import { messageFromJson, type Message as IMessage } from "../model/message.ts";
 import useInfiniteScroll from "react-infinite-scroll-hook";
@@ -298,7 +298,7 @@ function Chat() {
             </button>
             <button
               onClick={deleteMessage}
-              className="transition-colors w-20 h-10 shrink-0 bg-red-400 text-white rounded-md hover:bg-white hover:text-red-400 active:bg-red-400 active:text-white"
+              className="transition-colors w-16 h-10 shrink-0 bg-red-400 text-white rounded-md hover:bg-white hover:text-red-400 active:bg-red-400 active:text-white"
             >
               Delete
             </button>
