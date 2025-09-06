@@ -16,4 +16,4 @@ EXPOSE 8000
 
 WORKDIR /app/backend
 
-CMD ["fastapi", "run", "--port", "8000", "main.py"]
+CMD ["fastapi", "run", "--port", "80", "main.py"]
