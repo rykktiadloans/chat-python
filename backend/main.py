@@ -9,6 +9,7 @@ from config.database import database_init
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    "Lifespan function. Stuff before `yield` runs before the startup"
     database_init()
     yield
 
