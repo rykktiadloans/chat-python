@@ -1,22 +1,25 @@
 import { useSelector } from "react-redux";
 import Contact from "../components/Contact";
 import Message from "../components/Message";
-import { logout, selectToken, selectUsername } from "../stores/user/userSlice";
 import { useNavigate } from "react-router";
 import { useEffect, useState} from "react";
 import { contactFromJson, type Contact as IContact } from "../model/contact.ts";
 import { messageFromJson, type Message as IMessage } from "../model/message.ts";
 import useInfiniteScroll from "react-infinite-scroll-hook";
-import { useUserDispatch } from "../stores/user/userStore.ts";
+import { useUserStore } from "../stores/userStore.ts";
 
 type Overlays = "new-contact" | "edit-message";
 
 function Chat() {
-  const token = useSelector(selectToken);
-  const username = useSelector(selectUsername);
   const navigate = useNavigate();
+  const user = useUserStore(state => state.user);
+  const token = user.token;
+  const username = user.credentials?.username;
+  if (token === null || username === undefined) {
+    navigate("/login");
+  }
 
-  const dispatch = useUserDispatch();
+  const logout = useUserStore(state => state.logout);
 
   const [contacts, setContacts] = useState<IContact[]>([]);
   const [contactFilter, setContactFilter] = useState("");
@@ -93,11 +96,7 @@ function Chat() {
   };
 
   useEffect(() => {
-    if (token === null || username === undefined) {
-      navigate("/login");
-    }
     setPage(0);
-    //setMessages([]);
     setMessageToSend("");
     setFiles(null);
     setFull(false);
@@ -339,7 +338,7 @@ function Chat() {
           <button
             className="transition-colors w-10 h-10 shrink-0 bg-emerald-400 text-white rounded-md hover:bg-white hover:text-emerald-400 active:bg-emerald-400 active:text-white"
             onClick={() => {
-              dispatch(logout());
+              logout();
               navigate("/login");
             }}
           >

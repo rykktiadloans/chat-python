@@ -1,14 +1,13 @@
 import { useState, type FormEvent } from "react";
 import FormField from "../components/FormField";
-import { useUserDispatch } from "../stores/user/userStore";
-import { setUser } from "../stores/user/userSlice";
-import { useNavigate} from "react-router";
+import { useNavigate } from "react-router";
+import { useUserStore } from "../stores/userStore";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const dispatch = useUserDispatch();
+  const setUser = useUserStore((state) => state.setUser);
   const navigate = useNavigate();
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,14 +26,12 @@ function Login() {
     });
     if (response.ok) {
       const json = await response.json();
-      dispatch(
-        setUser({
-          credentials: {
-            username: username,
-            password: password,
-          },
-          token: json.token,
-        }),
+      setUser(
+        {
+          username: username,
+          password: password,
+        },
+        json.token,
       );
       setError("");
       navigate("/");
