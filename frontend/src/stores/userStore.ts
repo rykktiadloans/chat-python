@@ -1,14 +1,14 @@
 import { create } from "zustand";
-import { initialState, type UserCredentials, type UserState } from "../model/user";
+import { type UserCredentials, type UserState } from "../model/user";
 
 export interface UserStore {
-  user: UserState;
+  user: UserState | null;
   setUser: (credentials: UserCredentials, token: string) => void;
   logout: () => void;
 }
 
 export const useUserStore = create<UserStore>()((set) => ({
-  user: initialState,
+  user: null,
 
   setUser: (credentials, token) => {
     set((state) => ({
@@ -21,10 +21,7 @@ export const useUserStore = create<UserStore>()((set) => ({
 
   logout: () => {
     set((state) => ({
-      user: {
-        credentials: null,
-        token: null,
-      },
+      user: null,
     }));
   },
 

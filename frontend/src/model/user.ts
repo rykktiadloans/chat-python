@@ -4,11 +4,6 @@ export interface UserCredentials {
 }
 
 export interface UserState {
-  credentials: UserCredentials | null;
-  token: string | null;
-}
-
-export const initialState: UserState = {
-  credentials: null,
-  token: null
+  credentials: UserCredentials;
+  token: string;
 }

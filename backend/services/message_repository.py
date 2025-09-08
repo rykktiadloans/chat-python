@@ -53,7 +53,7 @@ def get_messages(sender: User, recipient: User, page: PageDependency, session: S
             and_(Message.sender == recipient and Message.recipient == sender))
         )
         .order_by(desc(Message.sent_at))
-        .offset(page.size * page.page)
+        .offset(page.size * page.page + page.offset)
         .limit(page.size)
     ).all())
 
