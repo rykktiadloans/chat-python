@@ -12,6 +12,7 @@ interface Props {
   setSelectedMessageContent: (content: string) => void;
   setShowOverlay: () => void;
   setOverlay: () => void;
+  reloadMessages: number;
 }
 
 function MessageList({
@@ -20,6 +21,7 @@ function MessageList({
   setSelectedMessageContent,
   setShowOverlay,
   setOverlay,
+  reloadMessages
 }: Props) {
   const token = useUserStore((state) => state.user!.token);
   const username = useUserStore((state) => state.user!.credentials.username)!;
@@ -93,7 +95,7 @@ function MessageList({
     return () => {
       clearInterval(timer);
     };
-  }, [other]);
+  }, [other, reloadMessages]);
 
   const increaseOffset = () => {
     setOffset((offset) => offset + 1);

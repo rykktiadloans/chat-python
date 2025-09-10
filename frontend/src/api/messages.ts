@@ -46,8 +46,40 @@ export async function sendMessage(
       },
       body: form,
     }).then((response) => response.json());
-  }
-  catch (e: any) {
+  } catch (e: any) {
     console.log(e);
   }
+}
+
+export async function patchMessage(id: number, content: string, token: string): Promise<void> {
+  try {
+    await fetch(`/api/v1/messages/`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        content: content,
+      }),
+    }).then((response) => response.json());
+  } catch (e: any) {
+    console.log(e);
+  }
+  return;
+}
+
+export async function deleteMessage(id: number, token: string): Promise<void> {
+  try {
+    await fetch(`/api/v1/messages/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => response.json());
+  } catch (e: any) {
+    console.log(e);
+  }
+  return;
 }
