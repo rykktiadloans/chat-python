@@ -8,39 +8,25 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const setUser = useUserStore((state) => state.setUser);
+  const login = useUserStore((state) => state.login);
   const navigate = useNavigate();
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (username === "" || password === "") {
       setError("Empty entries!");
       return;
     }
-    const response = await fetch("/api/v1/users/login", {
-      method: "POST",
-      body: new URLSearchParams({
-        username: username,
-        password: password,
-      }),
-    }).catch((error) => {
-      throw new Error(`There was an error when logging in: ${error}`);
-    });
-    if (response.ok) {
-      const json = await response.json();
-      setUser(
-        {
-          username: username,
-          password: password,
-        },
-        json.token,
-      );
-      setError("");
-      navigate("/");
-    } else if (response.status === 401) {
-      const json = await response.json();
-      setError(json.detail);
-    } else {
-      setError("Try again");
-    }
+    login({
+      username: username,
+      password: password,
+    })
+      .then(() => {
+        setError("");
+        navigate("/");
+      })
+      .catch((error) => {
+        setError(error.toString());
+      });
   };
   return (
     <main className="w-full h-screen py-9 bg-gray-200 flex flex-col items-center gap-10">
