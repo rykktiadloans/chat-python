@@ -10,6 +10,7 @@ from services.attachment_repository import save_attachments_file
 from services.user_repository import get_user_by_username
 import logging
 
+
 def save_message(message: Message, session: SessionDependency) -> Message:
     "Save a message"
     session.add(message)
@@ -17,16 +18,18 @@ def save_message(message: Message, session: SessionDependency) -> Message:
     session.refresh(message)
     return message
 
+
 def save_message_request(sender: User, message_request: MessageRequest, files: list[UploadFile], session: SessionDependency) -> Message:
     "Check that the users in message_request actually exist and then save a message based on the details"
-    recipient = get_user_by_username(message_request.recipient_username, session)
+    recipient = get_user_by_username(
+        message_request.recipient_username, session)
 
     if recipient == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Recipient '{message_request.recipient_username}' does not exist"
         )
-    if sender.id == recipient.id :
+    if sender.id == recipient.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Recipient and sender are the same!"
@@ -44,12 +47,13 @@ def save_message_request(sender: User, message_request: MessageRequest, files: l
         attachments=attachments
     ), session)
 
+
 def get_messages(sender: User, recipient: User, page: PageDependency, session: SessionDependency) -> list[Message]:
     "Get a list of messages made between sender and recipient"
     return list(session.exec(
         select(Message)
         .where(or_(
-            and_(Message.sender == sender, Message.recipient == recipient), 
+            and_(Message.sender == sender, Message.recipient == recipient),
             and_(Message.sender == recipient and Message.recipient == sender))
         )
         .order_by(desc(Message.sent_at))
@@ -57,9 +61,11 @@ def get_messages(sender: User, recipient: User, page: PageDependency, session: S
         .limit(page.size)
     ).all())
 
+
 def get_message_by_id(id: int, session: SessionDependency) -> Message | None:
     "Returns a message with the specified ID, or none if it cannot find it"
     return session.get(Message, id)
+
 
 def delete_message(message: Message, session: SessionDependency) -> None:
     "Deletes a message"

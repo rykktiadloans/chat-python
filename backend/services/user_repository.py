@@ -10,11 +10,13 @@ from model.page import PageDependency
 from model.user import User
 from services.encryption import hashify
 
+
 class Contact(BaseModel):
     message_id: int
     other: str
     content: str
     sent_at: datetime
+
 
 def get_user_by_username(username: str, session: SessionDependency) -> User | None:
     "Get a user by their username. If nothing is found, return None."
@@ -22,9 +24,11 @@ def get_user_by_username(username: str, session: SessionDependency) -> User | No
         select(User).where(User.username == username)
     ).one_or_none()
 
+
 def get_user_by_id(id: int, session: SessionDependency) -> User | None:
     "Get a user by id. If nothing is found, return None."
     return session.get(User, id)
+
 
 def get_contacts(user: User, session: SessionDependency) -> list[Contact]:
     "Get a list of contacts"
@@ -54,7 +58,8 @@ WINDOW wnd AS (
     ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
 ORDER BY sent_at DESC;
 """
-    result = session.connection().execute(text(sql), {"username": user.username})
+    result = session.connection().execute(
+        text(sql), {"username": user.username})
     contacts: list[Contact] = []
     for row in result:
         contacts.append(Contact(
@@ -64,6 +69,7 @@ ORDER BY sent_at DESC;
             sent_at=row.sent_at
         ))
     return contacts
+
 
 def save_user(user: User, session: SessionDependency) -> User:
     "Save a user to the database and return the updated version"

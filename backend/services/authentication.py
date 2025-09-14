@@ -16,6 +16,7 @@ incorrect_credentials = HTTPException(
     detail="Incorrect credentials"
 )
 
+
 def login_user(username: str, password: str, session: SessionDependency):
     "Check if the user with specified credentials exists and return a corresponding token"
     user = get_user_by_username(username, session)
@@ -23,7 +24,8 @@ def login_user(username: str, password: str, session: SessionDependency):
         raise incorrect_credentials
     if not hashed_equals(password, user.password):
         raise incorrect_credentials
-    return user_to_token(user)   
+    return user_to_token(user)
+
 
 def register_user(username: str, password: str, session: SessionDependency) -> User:
     "Create a new user"
@@ -33,6 +35,7 @@ def register_user(username: str, password: str, session: SessionDependency) -> U
     )
     return save_user(user, session)
 
+
 async def get_logged_in_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDependency) -> User:
     "Get the user from the JWT token"
     id = get_user_id_from_token(token)
@@ -40,4 +43,3 @@ async def get_logged_in_user(token: Annotated[str, Depends(oauth2_scheme)], sess
     if user == None:
         raise incorrect_credentials
     return user
-

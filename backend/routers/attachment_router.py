@@ -11,8 +11,9 @@ from services.attachment_repository import ATTACHMENTS_DIR, get_attachment_by_st
 prefix = "/api/v1/attachments"
 
 router = APIRouter(
-    prefix = prefix
+    prefix=prefix
 )
+
 
 @router.get("/{stored_name}")
 async def get_attachment(stored_name: Annotated[str, Path], session: SessionDependency):

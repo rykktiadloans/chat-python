@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from routers.auth import router as auth_router
-from routers.messages import router as message_router
-from routers.attachments import router as attachment_router
-from routers.frontend import router as frontend_router
+from routers.auth_router import router as auth_router
+from routers.messages_router import router as message_router
+from routers.attachment_router import router as attachment_router
+from routers.frontend_router import router as frontend_router
 from config.database import database_init
 
 @asynccontextmanager

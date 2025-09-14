@@ -12,6 +12,7 @@ from services.authentication import get_logged_in_user
 from services.message_repository import get_message_by_id, get_messages, save_message, save_message_request, delete_message as delete_message_from_db
 from services.user_repository import get_user_by_username
 
+
 class PatchPost(BaseModel):
     id: int
     content: str = Field(max_length=CONTENT_LENGTH)
@@ -26,23 +27,26 @@ class MessageResponse(BaseModel):
     recipient_username: str
     attachments: list[AttachmentResponse]
 
+
 prefix = "/api/v1/messages"
 
 router = APIRouter(
     prefix=prefix
 )
 
+
 @router.post("/")
 async def post_message(
         recipient_username: Annotated[str, Form()],
-        user: Annotated[User, Depends(get_logged_in_user)], 
+        user: Annotated[User, Depends(get_logged_in_user)],
         session: SessionDependency,
         attachments: list[UploadFile] | None = None,
         content: Annotated[str, Form(max_length=CONTENT_LENGTH)] = ""):
     "An endpoint for making new messages"
     if attachments == None:
         attachments = []
-    message_request = MessageRequest(content=content, recipient_username=recipient_username)
+    message_request = MessageRequest(
+        content=content, recipient_username=recipient_username)
     message = save_message_request(user, message_request, attachments, session)
     return MessageResponse(
         id=(0 if message.id == None else message.id),
@@ -56,10 +60,11 @@ async def post_message(
         ), message.attachments))
     )
 
+
 @router.patch("/")
 async def patch_message(
-        patch_post: Annotated[PatchPost, Body()], 
-        user: Annotated[User, Depends(get_logged_in_user)], 
+        patch_post: Annotated[PatchPost, Body()],
+        user: Annotated[User, Depends(get_logged_in_user)],
         session: SessionDependency):
     "An endpoint for patching messages"
     message = get_message_by_id(patch_post.id, session)
@@ -87,10 +92,11 @@ async def patch_message(
         ), message.attachments))
     )
 
+
 @router.delete("/{id}")
 async def delete_message(
         id: Annotated[int, Path()],
-        user: Annotated[User, Depends(get_logged_in_user)], 
+        user: Annotated[User, Depends(get_logged_in_user)],
         session: SessionDependency):
     "An endpoint for deleting messages"
     message = get_message_by_id(id, session)
@@ -103,11 +109,12 @@ async def delete_message(
 
     delete_message_from_db(message, session)
 
+
 @router.get("/")
 async def get_message(
         recipient_username: Annotated[str, Query()],
-        page: PageDependency, 
-        user: Annotated[User, Depends(get_logged_in_user)], 
+        page: PageDependency,
+        user: Annotated[User, Depends(get_logged_in_user)],
         session: SessionDependency):
     "An endpoint for getting new messages"
     recipient = get_user_by_username(recipient_username, session)

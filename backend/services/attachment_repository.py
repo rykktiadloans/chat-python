@@ -42,6 +42,7 @@ def save_attachments_file(file: UploadFile, session: SessionDependency) -> Attac
         stored_name=str(filename)
     )
 
+
 def get_attachment_by_stored_name(stored_name: str, session: SessionDependency) -> Attachment | None:
     "Get an attachment by its stored name. Returns None if nothing could be found"
     return session.exec(select(Attachment).where(Attachment.stored_name == stored_name)).one_or_none()
