@@ -15,3 +15,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+database_uri = f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_url}:5432/{settings.db_name}"

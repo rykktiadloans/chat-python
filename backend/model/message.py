@@ -4,7 +4,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from model.user import User
 
-CONTENT_LENGTH = 1000
+CONTENT_LENGTH = 1024
 
 
 class Message(SQLModel, table=True):
